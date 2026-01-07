@@ -54,9 +54,12 @@
 
     <style>
         body {
-            /* Cursor hidden for custom cursor */
-            cursor: none; 
+            /* Cursor hidden for custom cursor on desktop */
+            cursor: auto; 
             overflow-x: hidden;
+        }
+        @media (min-width: 768px) {
+            body { cursor: none; }
         }
         
         /* Custom Scrollbar */
@@ -142,7 +145,11 @@
             Award: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
             Briefcase: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
             Download: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
-            Layers: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            Layers: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>,
+            Menu: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
+            GraduationCap: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>,
+            Plus: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
+            Minus: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         };
 
         // --- DATA ---
@@ -176,6 +183,15 @@
                 company: "Intellidane",
                 period: "Mar 2021 - Jun 2022",
                 desc: "Developed predictive models for energy consumption using sensor data. Built object detection models for architectural styles."
+            }
+        ];
+
+        const EDUCATION = [
+            {
+                degree: "Bachelor of Technology (B.Tech), Architecture",
+                school: "Federal University of Technology Akure (FUTA)",
+                period: "2019 - 2025 (Expected)",
+                desc: "Coursework highlights: Computational Design, Sustainable Systems, Building Information Modeling (BIM), Urban Analytics, and Parametric Design."
             }
         ];
 
@@ -220,6 +236,13 @@
             { category: "Architecture", items: ["BIM", "Grasshopper", "AutoCAD", "Revit", "Parametric Design"] }
         ];
 
+        const FAQS = [
+            { q: "Do you work with architectural firms?", a: "Yes, I specialize in helping architectural firms integrate AI and computational design tools to automate workflows and optimize designs." },
+            { q: "What is your hourly rate for ML consultancy?", a: "My rates vary depending on the project scope. I offer both hourly and project-based pricing. Contact me for a quote." },
+            { q: "Can you build custom RAG chatbots?", a: "Absolutely. I have extensive experience building RAG systems for accessing and interpreting complex technical documents like building codes." },
+            { q: "Are you open to full-time roles?", a: "I am currently open to internship and contract roles in AI, Computational Design, and Software Engineering." }
+        ];
+
         // --- HOOKS & UTILS ---
         const useMousePosition = () => {
             const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -233,7 +256,6 @@
 
         // --- COMPONENTS ---
 
-        // 1. Terminal Loader (RESTORED)
         const TerminalLoader = ({ onComplete }) => {
             const [lines, setLines] = useState([]);
             
@@ -287,7 +309,6 @@
                 cursorY.set(y - 16);
             }, [x, y]);
 
-            // Only show custom cursor in Hacker mode or Dark mode on Desktop
             return (
                 <motion.div 
                     className={`fixed top-0 left-0 w-8 h-8 border rounded-full pointer-events-none z-[100] hidden md:flex items-center justify-center mix-blend-difference ${mode === 'hacker' ? 'border-hack-neon' : 'border-white'}`}
@@ -320,7 +341,6 @@
                 setInput("");
                 setIsTyping(true);
 
-                // Simulated AI Response
                 setTimeout(() => {
                     setMessages(p => [...p, { 
                         id: Date.now()+1, 
@@ -390,6 +410,8 @@
 
         const Navbar = ({ mode, setMode, theme, toggleTheme }) => {
             const [scrolled, setScrolled] = useState(false);
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
             useEffect(() => {
                 const handleScroll = () => setScrolled(window.scrollY > 50);
                 window.addEventListener('scroll', handleScroll);
@@ -418,19 +440,55 @@
                         </div>
 
                         <div className="flex items-center gap-4">
-                            {mode === 'architect' && (
-                                <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-900 dark:text-white">
-                                    {theme === 'dark' ? <Icons.Sun size={18} /> : <Icons.Moon size={18} />}
-                                </button>
-                            )}
+                            {/* THEME TOGGLE IS HERE */}
+                            <button 
+                                onClick={toggleTheme} 
+                                className={`p-2 rounded-full transition-colors ${mode === 'hacker' ? 'text-gray-500 cursor-not-allowed opacity-50' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white'}`}
+                                disabled={mode === 'hacker'}
+                                title={mode === 'hacker' ? "Theme locked in Hacker Mode" : "Toggle Theme"}
+                            >
+                                {theme === 'dark' || mode === 'hacker' ? <Icons.Sun size={18} /> : <Icons.Moon size={18} />}
+                            </button>
+
                             <button 
                                 onClick={() => setMode(mode === 'architect' ? 'hacker' : 'architect')}
-                                className={`px-4 py-2 rounded font-mono text-xs border transition-all ${mode === 'hacker' ? 'border-hack-neon text-hack-neon shadow-[0_0_10px_rgba(0,255,65,0.3)]' : 'border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800'}`}
+                                className={`hidden md:block px-4 py-2 rounded font-mono text-xs border transition-all ${mode === 'hacker' ? 'border-hack-neon text-hack-neon shadow-[0_0_10px_rgba(0,255,65,0.3)]' : 'border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800'}`}
                             >
                                 MODE: {mode === 'architect' ? 'ARCHITECT' : 'HACKER'}
                             </button>
+
+                            {/* Mobile Menu Toggle */}
+                            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden text-zinc-900 dark:text-white">
+                                {mobileMenuOpen ? <Icons.X /> : <Icons.Menu />}
+                            </button>
                         </div>
                     </div>
+
+                    {/* Mobile Menu */}
+                    <AnimatePresence>
+                        {mobileMenuOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className={`md:hidden border-b ${mode === 'hacker' ? 'bg-black border-hack-neon' : 'bg-white dark:bg-black border-zinc-200 dark:border-zinc-800'}`}
+                            >
+                                <div className="flex flex-col p-6 gap-4">
+                                    {['About', 'Experience', 'Projects', 'Contact'].map((item) => (
+                                        <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMobileMenuOpen(false)} className={`font-mono text-sm py-2 ${mode === 'hacker' ? 'text-hack-neon' : 'text-zinc-900 dark:text-white'}`}>
+                                            {item}
+                                        </a>
+                                    ))}
+                                    <button 
+                                        onClick={() => { setMode(mode === 'architect' ? 'hacker' : 'architect'); setMobileMenuOpen(false); }}
+                                        className={`w-full px-4 py-2 rounded font-mono text-xs border ${mode === 'hacker' ? 'border-hack-neon text-hack-neon' : 'border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white'}`}
+                                    >
+                                        SWITCH TO {mode === 'architect' ? 'HACKER' : 'ARCHITECT'} MODE
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </motion.nav>
             );
         };
@@ -485,9 +543,35 @@
             );
         };
 
+        const Education = ({ mode }) => {
+            return (
+                <section className={`py-24 relative ${mode === 'hacker' ? 'bg-hack-panel' : 'bg-zinc-50 dark:bg-zinc-900/50'}`}>
+                    <div className="container mx-auto px-6">
+                        <div className="mb-16">
+                            <h2 className={`font-display text-3xl md:text-4xl font-bold mb-4 ${mode === 'hacker' ? 'text-white' : 'text-zinc-900 dark:text-white'}`}>
+                                Education
+                            </h2>
+                        </div>
+                        <div className="grid gap-8">
+                            {EDUCATION.map((edu, i) => (
+                                <div key={i} className={`p-8 rounded-2xl border ${mode === 'hacker' ? 'border-hack-neon/20 bg-black' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black'}`}>
+                                    <div className="flex flex-col md:flex-row justify-between md:items-center mb-4">
+                                        <h3 className={`text-xl font-bold ${mode === 'hacker' ? 'text-white' : 'text-zinc-900 dark:text-white'}`}>{edu.degree}</h3>
+                                        <span className={`text-sm font-mono ${mode === 'hacker' ? 'text-hack-neon' : 'text-hack-primary'}`}>{edu.period}</span>
+                                    </div>
+                                    <h4 className="text-zinc-500 font-mono mb-4">{edu.school}</h4>
+                                    <p className="text-zinc-600 dark:text-zinc-400">{edu.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
         const Experience = ({ mode }) => {
             return (
-                <section id="experience" className={`py-24 relative ${mode === 'hacker' ? 'bg-hack-panel' : 'bg-zinc-50 dark:bg-zinc-900/50'}`}>
+                <section id="experience" className={`py-24 relative ${mode === 'hacker' ? 'bg-black' : 'bg-white dark:bg-black'}`}>
                     <div className="container mx-auto px-6">
                         <div className="mb-16">
                             <h2 className={`font-display text-3xl md:text-4xl font-bold mb-4 ${mode === 'hacker' ? 'text-white' : 'text-zinc-900 dark:text-white'}`}>
@@ -508,7 +592,7 @@
                                     <div className={`absolute -left-[9px] top-0 w-4 h-4 rounded-full border-2 ${mode === 'hacker' ? 'bg-black border-hack-neon' : 'bg-white dark:bg-black border-hack-primary'}`}></div>
                                     <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
                                         <h3 className={`text-xl font-bold ${mode === 'hacker' ? 'text-white' : 'text-zinc-900 dark:text-white'}`}>{exp.role}</h3>
-                                        <span className={`text-sm font-mono px-2 py-1 rounded ${mode === 'hacker' ? 'bg-hack-neon/10 text-hack-neon' : 'bg-hack-primary/10 text-hack-primary'}`}>
+                                        <span className={`text-sm font-mono px-2 py-1 rounded w-fit ${mode === 'hacker' ? 'bg-hack-neon/10 text-hack-neon' : 'bg-hack-primary/10 text-hack-primary'}`}>
                                             @{exp.company}
                                         </span>
                                     </div>
@@ -524,7 +608,7 @@
 
         const Stack = ({ mode }) => {
             return (
-                <section id="stack" className={`py-24 border-t ${mode === 'hacker' ? 'border-white/5 bg-black' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black'}`}>
+                <section id="stack" className={`py-24 border-t ${mode === 'hacker' ? 'border-white/5 bg-hack-panel' : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50'}`}>
                     <div className="container mx-auto px-6">
                         <div className="mb-16">
                             <h2 className={`font-display text-3xl md:text-4xl font-bold mb-4 ${mode === 'hacker' ? 'text-white' : 'text-zinc-900 dark:text-white'}`}>
@@ -535,7 +619,7 @@
 
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {SKILLS.map((category, i) => (
-                                <div key={i} className={`p-6 rounded-xl border ${mode === 'hacker' ? 'border-hack-neon/20 bg-hack-panel' : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900'}`}>
+                                <div key={i} className={`p-6 rounded-xl border ${mode === 'hacker' ? 'border-hack-neon/20 bg-black' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black'}`}>
                                     <h3 className={`font-bold mb-4 flex items-center gap-2 ${mode === 'hacker' ? 'text-hack-neon' : 'text-hack-primary'}`}>
                                         <Icons.Layers size={18}/> {category.category}
                                     </h3>
@@ -556,7 +640,7 @@
 
         const Projects = ({ mode }) => {
             return (
-                <section id="projects" className={`py-24 ${mode === 'hacker' ? 'bg-hack-panel' : 'bg-zinc-50 dark:bg-zinc-900/50'}`}>
+                <section id="projects" className={`py-24 ${mode === 'hacker' ? 'bg-black' : 'bg-white dark:bg-black'}`}>
                     <div className="container mx-auto px-6">
                         <div className="flex justify-between items-end mb-16">
                             <div>
@@ -572,7 +656,7 @@
                                 <motion.div 
                                     key={i}
                                     whileHover={{ y: -5 }}
-                                    className={`group p-8 rounded-2xl border transition-all duration-300 ${mode === 'hacker' ? 'border-hack-neon/30 bg-black hover:border-hack-neon' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black hover:border-hack-primary shadow-sm hover:shadow-xl'}`}
+                                    className={`group p-8 rounded-2xl border transition-all duration-300 ${mode === 'hacker' ? 'border-hack-neon/30 bg-hack-panel hover:border-hack-neon' : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 hover:border-hack-primary shadow-sm hover:shadow-xl'}`}
                                 >
                                     <div className="flex justify-between items-start mb-6">
                                         <div className={`p-3 rounded-lg ${mode === 'hacker' ? 'bg-hack-neon/10 text-hack-neon' : 'bg-hack-primary/10 text-hack-primary'}`}>
@@ -605,7 +689,7 @@
 
         const Certifications = ({ mode }) => {
             return (
-                <section className={`py-24 border-t ${mode === 'hacker' ? 'border-white/5 bg-black' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black'}`}>
+                <section className={`py-24 border-t ${mode === 'hacker' ? 'border-white/5 bg-hack-panel' : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50'}`}>
                     <div className="container mx-auto px-6">
                         <h2 className={`font-display text-2xl font-bold mb-10 text-center ${mode === 'hacker' ? 'text-white' : 'text-zinc-900 dark:text-white'}`}>
                             Certifications & <span className={mode === 'hacker' ? 'text-hack-neon' : 'text-hack-primary'}>Awards</span>
@@ -613,7 +697,7 @@
                         
                         <div className="grid md:grid-cols-4 gap-6">
                             {CERTIFICATIONS.map((c, i) => (
-                                <div key={i} className={`p-6 text-center rounded-xl border ${mode === 'hacker' ? 'border-zinc-800 bg-hack-panel' : 'border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900'}`}>
+                                <div key={i} className={`p-6 text-center rounded-xl border ${mode === 'hacker' ? 'border-zinc-800 bg-black' : 'border-zinc-100 dark:border-zinc-800 bg-white dark:bg-black'}`}>
                                     <div className="mb-4 inline-flex p-3 rounded-full bg-zinc-200 dark:bg-zinc-800">
                                         <Icons.Award size={20} className={mode === 'hacker' ? 'text-hack-neon' : 'text-hack-primary'}/>
                                     </div>
@@ -627,43 +711,116 @@
             );
         };
 
+        const FAQ = ({ mode }) => {
+            const [activeIndex, setActiveIndex] = useState(null);
+
+            return (
+                <section className={`py-24 border-t ${mode === 'hacker' ? 'border-white/5 bg-black' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black'}`}>
+                    <div className="container mx-auto px-6 max-w-3xl">
+                        <h2 className={`font-display text-3xl font-bold mb-12 text-center ${mode === 'hacker' ? 'text-white' : 'text-zinc-900 dark:text-white'}`}>
+                            FAQ
+                        </h2>
+                        <div className="space-y-4">
+                            {FAQS.map((faq, i) => (
+                                <div key={i} className={`border rounded-lg overflow-hidden ${mode === 'hacker' ? 'border-hack-neon/30 bg-hack-panel' : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900'}`}>
+                                    <button 
+                                        className="w-full text-left p-4 md:p-6 flex justify-between items-center"
+                                        onClick={() => setActiveIndex(activeIndex === i ? null : i)}
+                                    >
+                                        <span className={`font-bold ${mode === 'hacker' ? 'text-hack-neon' : 'text-zinc-900 dark:text-white'}`}>{faq.q}</span>
+                                        {activeIndex === i ? <Icons.Minus size={16} /> : <Icons.Plus size={16} />}
+                                    </button>
+                                    <AnimatePresence>
+                                        {activeIndex === i && (
+                                            <motion.div 
+                                                initial={{ height: 0 }}
+                                                animate={{ height: 'auto' }}
+                                                exit={{ height: 0 }}
+                                                className="overflow-hidden"
+                                            >
+                                                <div className="p-4 md:p-6 pt-0 text-sm md:text-base text-zinc-600 dark:text-zinc-400">
+                                                    {faq.a}
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
         const Contact = ({ mode }) => {
             return (
-                <section id="contact" className={`py-24 relative overflow-hidden ${mode === 'hacker' ? 'bg-hack-panel' : 'bg-zinc-50 dark:bg-zinc-900'}`}>
+                <section id="contact" className={`py-24 relative overflow-hidden ${mode === 'hacker' ? 'bg-hack-panel' : 'bg-zinc-50 dark:bg-zinc-900/50'}`}>
                     <div className="container mx-auto px-6 max-w-4xl">
-                        <div className={`p-1 rounded-xl bg-gradient-to-r ${mode === 'hacker' ? 'from-hack-neon to-black' : 'from-hack-primary to-purple-600'}`}>
-                            <div className="bg-black rounded-lg p-8 md:p-12 font-mono relative overflow-hidden">
-                                {mode === 'hacker' && <div className="absolute inset-0 scanline opacity-5"></div>}
+                        <div className="grid md:grid-cols-2 gap-12 items-start">
+                            {/* Contact Info */}
+                            <div>
+                                <h2 className={`font-display text-3xl font-bold mb-6 ${mode === 'hacker' ? 'text-white' : 'text-zinc-900 dark:text-white'}`}>
+                                    Get in <span className={mode === 'hacker' ? 'text-hack-neon' : 'text-hack-primary'}>Touch</span>
+                                </h2>
+                                <p className="text-zinc-600 dark:text-zinc-400 mb-8 leading-relaxed">
+                                    Available for freelance projects, consultancy, and full-time roles in AI & Computational Design.
+                                </p>
                                 
-                                <div className="flex gap-2 mb-8 relative z-10">
-                                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                <div className="space-y-4">
+                                    <a href="mailto:marvellouskolawole.mk@gmail.com" className="flex items-center gap-4 text-zinc-600 dark:text-zinc-400 hover:text-hack-primary transition-colors">
+                                        <Icons.Mail size={20} /> marvellouskolawole.mk@gmail.com
+                                    </a>
+                                    <a href="https://linkedin.com/in/thehackitect" target="_blank" className="flex items-center gap-4 text-zinc-600 dark:text-zinc-400 hover:text-hack-primary transition-colors">
+                                        <Icons.Linkedin size={20} /> linkedin.com/in/thehackitect
+                                    </a>
+                                    <a href="https://github.com/thehackitect" target="_blank" className="flex items-center gap-4 text-zinc-600 dark:text-zinc-400 hover:text-hack-primary transition-colors">
+                                        <Icons.Github size={20} /> github.com/thehackitect
+                                    </a>
                                 </div>
+                            </div>
 
-                                <div className="space-y-4 mb-8 text-sm md:text-base relative z-10">
-                                    <div className="text-zinc-400">
-                                        <span className="text-green-500">➜</span>  ~  initiate_contact_protocol
+                            {/* Contact Form */}
+                            <div className={`p-8 rounded-2xl ${mode === 'hacker' ? 'bg-black border border-hack-neon/30' : 'bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 shadow-xl'}`}>
+                                {mode === 'hacker' ? (
+                                    <div className="font-mono text-sm">
+                                        <div className="mb-4 text-green-500">> initiate_contact_protocol</div>
+                                        <form className="space-y-4">
+                                            <div>
+                                                <label className="block text-gray-500 mb-1">> enter_name:</label>
+                                                <input type="text" className="w-full bg-transparent border-b border-gray-700 focus:border-green-500 outline-none text-white py-1" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-gray-500 mb-1">> enter_email:</label>
+                                                <input type="email" className="w-full bg-transparent border-b border-gray-700 focus:border-green-500 outline-none text-white py-1" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-gray-500 mb-1">> enter_message:</label>
+                                                <textarea rows="3" className="w-full bg-transparent border-b border-gray-700 focus:border-green-500 outline-none text-white py-1"></textarea>
+                                            </div>
+                                            <button type="button" className="mt-4 px-6 py-2 bg-green-500/10 text-green-500 border border-green-500 hover:bg-green-500 hover:text-black transition-all uppercase text-xs tracking-widest font-bold">
+                                                [ EXECUTE_SEND ]
+                                            </button>
+                                        </form>
                                     </div>
-                                    <div className="text-white">
-                                        Opening secure channel... <span className="text-green-500">Done.</span>
-                                    </div>
-                                    
-                                    <div className="grid gap-4 mt-6">
-                                        <a href="mailto:marvellouskolawole.mk@gmail.com" className="flex items-center gap-4 text-white hover:text-hack-primary transition-colors group">
-                                            <span className="text-zinc-600 group-hover:text-hack-primary">></span> 
-                                            <Icons.Mail size={18} /> marvellouskolawole.mk@gmail.com
-                                        </a>
-                                        <a href="https://linkedin.com/in/thehackitect" target="_blank" className="flex items-center gap-4 text-white hover:text-hack-primary transition-colors group">
-                                            <span className="text-zinc-600 group-hover:text-hack-primary">></span> 
-                                            <Icons.Linkedin size={18} /> linkedin.com/in/thehackitect
-                                        </a>
-                                        <a href="https://github.com/thehackitect" target="_blank" className="flex items-center gap-4 text-white hover:text-hack-primary transition-colors group">
-                                            <span className="text-zinc-600 group-hover:text-hack-primary">></span> 
-                                            <Icons.Github size={18} /> github.com/thehackitect
-                                        </a>
-                                    </div>
-                                </div>
+                                ) : (
+                                    <form className="space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Name</label>
+                                            <input type="text" className="w-full px-4 py-3 rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-hack-primary focus:ring-1 focus:ring-hack-primary outline-none transition-all" placeholder="John Doe" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Email</label>
+                                            <input type="email" className="w-full px-4 py-3 rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-hack-primary focus:ring-1 focus:ring-hack-primary outline-none transition-all" placeholder="john@example.com" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Message</label>
+                                            <textarea rows="4" className="w-full px-4 py-3 rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-hack-primary focus:ring-1 focus:ring-hack-primary outline-none transition-all" placeholder="Hello..."></textarea>
+                                        </div>
+                                        <button type="button" className="w-full py-3 bg-hack-primary hover:bg-blue-600 text-white font-bold rounded-lg transition-all shadow-lg shadow-blue-500/30">
+                                            Send Message
+                                        </button>
+                                    </form>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -674,8 +831,10 @@
         const Footer = ({ mode }) => {
             return (
                 <footer className={`py-8 border-t text-center font-mono text-xs ${mode === 'hacker' ? 'border-white/5 bg-black text-zinc-600' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black text-zinc-500'}`}>
-                    <p>Designed & Built by Kolawole Marvellous Olaoluwa.</p>
-                    <p className="mt-2">© {new Date().getFullYear()} TheHackitect. All systems operational.</p>
+                    <div className="container mx-auto px-6">
+                        <p className="mb-2">Designed & Built by Kolawole Marvellous Olaoluwa.</p>
+                        <p>© {new Date().getFullYear()} TheHackitect. All systems operational.</p>
+                    </div>
                 </footer>
             );
         };
@@ -688,7 +847,7 @@
 
             useEffect(() => {
                 const root = document.documentElement;
-                // If Hacker mode is active, force dark classes visually
+                // Hacker mode forces dark mode
                 if (mode === 'hacker') {
                     root.classList.add('dark');
                 } else {
@@ -697,7 +856,11 @@
                 }
             }, [theme, mode]);
 
-            const toggleTheme = () => setTheme(p => p === 'dark' ? 'light' : 'dark');
+            const toggleTheme = () => {
+                if (mode !== 'hacker') {
+                    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+                }
+            };
 
             return (
                 <>
@@ -717,10 +880,12 @@
                                 <Navbar mode={mode} setMode={setMode} theme={theme} toggleTheme={toggleTheme} />
                                 <ChatWidget mode={mode} />
                                 <Hero mode={mode} />
+                                <Education mode={mode} />
                                 <Experience mode={mode} />
                                 <Stack mode={mode} />
                                 <Projects mode={mode} />
                                 <Certifications mode={mode} />
+                                <FAQ mode={mode} />
                                 <Contact mode={mode} />
                                 <Footer mode={mode} />
                             </motion.div>
